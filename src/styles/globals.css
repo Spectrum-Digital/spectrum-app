@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply antialiased;
+  @apply font-sans;
+}
+
+/* Scrollbar */
+* {
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}
+
+/* Make content unclickable */
+.prevent-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+/* Flex */
+.container {
+  @apply max-w-[1280px] w-full mx-auto px-5;
+}
+.row-start {
+  @apply flex flex-row w-full justify-start items-center gap-2;
+}
+.row-center {
+  @apply flex flex-row w-full justify-center items-center gap-2;
+}
+.row-between {
+  @apply flex flex-row w-full justify-between items-center gap-2;
+}
+.row-end {
+  @apply flex flex-row w-full justify-end items-center gap-2;
+}
+.col-start {
+  @apply flex flex-col w-full justify-start items-start gap-2;
+}
+.col-center {
+  @apply flex flex-col w-full justify-start items-center gap-2;
+}
+
+/* Backgrounds */
+.bg-primary {
+  @apply bg-bg100-light dark:bg-bg100-dark;
+}
+.bg-secondary {
+  @apply bg-bg200-light dark:bg-bg200-dark;
+}
+.bg-tertiary {
+  @apply bg-bg300-light dark:bg-bg300-dark;
+}
+.hover-bg-primary {
+  @apply group-hover:bg-bg100-light hover:bg-bg100-light dark:hover:bg-bg100-dark dark:group-hover:bg-bg100-dark;
+}
+.hover-bg-secondary {
+  @apply group-hover:bg-bg200-light hover:bg-bg200-light dark:hover:bg-bg200-dark dark:group-hover:bg-bg200-dark;
+}
+.hover-bg-tertiary {
+  @apply group-hover:bg-bg300-light hover:bg-bg300-light dark:hover:bg-bg300-dark dark:group-hover:bg-bg300-dark;
+}
+
+/* Borders */
+.border-primary {
+  @apply border-b1-light dark:border-b1-dark;
+}
+.border-secondary {
+  @apply border-b2-light dark:border-b2-dark;
+}
+
+/* Cards */
+.card-col {
+  @apply flex flex-col justify-start items-start rounded-lg p-5 bg-primary border border-primary;
+}
+.card-row {
+  @apply card-col flex-row justify-start items-center;
+}
+
+/* Buttons */
+.btn {
+  @apply py-2 px-5 text-black dark:text-white text-sm font-semibold transition-all;
+}
+.btn-primary {
+  @apply btn px-7 rounded-xl border bg-primary hover-bg-secondary border-primary;
+}
+.btn-secondary {
+  @apply btn px-7 rounded-xl border bg-secondary hover-bg-tertiary border-secondary;
+}
+.btn-tertiary {
+  @apply btn px-7 rounded-xl border bg-secondary border-secondary;
+}
+.btn-active {
+  @apply bg-secondary hover-bg-secondary;
+}
+
+/* Table CSS */
+.grid-container {
+  @apply border border-primary rounded-xl overflow-hidden;
+}
+.grid-title {
+  @apply border-b border-primary text-sm font-bold py-2 px-3 md:py-5 md:px-5 md:text-md;
+}
+.grid-header {
+  @apply border-primary font-semibold text-sm px-3 py-3 md:px-5 md:py-5;
+}
+.grid-item {
+  @apply border-t border-primary hover-bg-tertiary text-sm px-3 py-3 md:px-5 md:py-5;
+}
+.grid-empty-row {
+  @apply w-full border-t border-primary px-5 py-5 md:px-8 md:py-5;
+}
+
+/* Modal */
+.ReactModal__Overlay {
+  -webkit-perspective: 600;
+  perspective: 600;
+  opacity: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+  transition: opacity 150ms ease-out;
+}
+
+.ReactModal__Content {
+  -webkit-transform: scale(0.5) rotateX(-30deg);
+  transform: scale(0.5) rotateX(-30deg);
+  height: fit-content;
+  margin: auto auto;
+  @apply !w-5/6 sm:!w-96 !p-0 !rounded-xl border border-secondary;
+}
+
+.ReactModal__Content--after-open {
+  -webkit-transform: scale(1) rotateX(0deg);
+  transform: scale(1) rotateX(0deg);
+  transition: all 150ms ease-in;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+}
+
+.ReactModal__Content--before-close {
+  -webkit-transform: scale(0.5) rotateX(30deg);
+  transform: scale(0.5) rotateX(30deg);
+  transition: all 150ms ease-in;
+}
+
+.ReactModal__Content.modal-dialog {
+  border: none;
+  background-color: transparent;
+}

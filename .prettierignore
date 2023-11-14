@@ -1,0 +1,8 @@
+node_modules
+dist
+workers-site
+.next
+.expo*
+.temp
+.circleci
+out
