@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
-import logo from '@/assets/images/logo.png'
+import logo from '@/assets/images/Logo.png'
 import { AppConfig } from '@/utils/app-config'
 import { useOnClickOutside } from '@/hooks/useOnOutsideClick'
 

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { useConnectModal, ConnectButton } from '@rainbow-me/rainbowkit'
 
 import ThemeSwitch from '@/components/theme'
-import logo from '@/assets/images/logo.png'
+import logo from '@/assets/images/Logo.png'
 import { useBreakpoint } from '@/hooks/useBreakpoint'
 
 export default function Nav() {
