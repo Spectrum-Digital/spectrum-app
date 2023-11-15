@@ -14,7 +14,6 @@
     "@mui/icons-material": "^5.14.16",
     "@mui/material": "^5.14.16",
     "@rainbow-me/rainbowkit": "^1.2.0",
-    "@spectrum-digital/generic-router": "^0.0.3",
     "@wagmi/core": "^1.4.5",
     "@wits/next-themes": "^0.2.16",
     "axios": "^1.6.0",
