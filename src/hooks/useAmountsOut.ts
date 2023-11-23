@@ -1,22 +1,26 @@
 import { useMemo } from 'react'
 import { useContractRead } from 'wagmi'
 import BigNumber from 'bignumber.js'
-import { Legs } from '@/lib/router'
+import { Path, SpectrumContract } from '@/lib/router'
 
-import { SpectrumRouter } from '@/constants/routes'
 import { MinimalToken } from '@/typings'
 
 export function useAmountsOut(
   tokenIn: MinimalToken,
   tokenOut: MinimalToken,
   amountIn: string | BigNumber,
+  paths: Path[],
 ): {
   error: string
   amountsOut: BigNumber
-  route: Legs
+  path: Path
 } {
   const amountInRaw = useMemo(() => new BigNumber(amountIn).shiftedBy(tokenIn.decimals), [amountIn, tokenIn])
-  const params = useMemo(() => SpectrumRouter.getAmountsOut(tokenIn, tokenOut, amountInRaw), [tokenIn, tokenOut, amountInRaw])
+
+  const params = useMemo(
+    () => SpectrumContract.getAmountsOut(tokenIn, tokenOut, amountInRaw, paths),
+    [tokenIn, tokenOut, amountInRaw, paths],
+  )
 
   const { data } = useContractRead({
     address: params.payload.address,
@@ -28,15 +32,9 @@ export function useAmountsOut(
     enabled: Boolean(!params.error && params.payload.address),
   })
 
-  // useEffect(() => {
-  //   if (params.error) {
-  //     console.error(params.errorMessage)
-  //   }
-  // }, [params])
-
   return useMemo(() => {
     if (tokenIn.address.toLowerCase() === tokenOut.address.toLowerCase()) {
-      return { error: '', amountsOut: new BigNumber(amountIn), route: [] }
+      return { error: '', amountsOut: new BigNumber(amountIn), path: [] }
     } else {
       return {
         error: params.errorCode ?? '',

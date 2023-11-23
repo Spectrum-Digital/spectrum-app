@@ -17,16 +17,3 @@ export const SupportedChainIds: SupportedChainId[] = [
 ]
 
 export const FALLBACK_CHAIN_ID = SupportedChainId.MAINNET
-
-export const isSupportedChainId = (chainId?: number): boolean => {
-  return SupportedChainIds.includes(chainId as SupportedChainId)
-}
-
-export const DefiLlamaCompatibleChain = {
-  arbitrum: SupportedChainId.ARBITRUM,
-  base: SupportedChainId.BASE,
-  bsc: SupportedChainId.BINANCE,
-  ethereum: SupportedChainId.MAINNET,
-  fantom: SupportedChainId.FANTOM,
-  optimism: SupportedChainId.OPTIMISM,
-} satisfies Record<string, SupportedChainId>

@@ -1,7 +1,15 @@
 import { useCallback, useMemo } from 'react'
 import { useAtom } from 'jotai'
+import { useHydrateAtoms } from 'jotai/utils'
 
-import { SlippageType, settingsModalOpenAtom, slippagePercentageAtom, slippageTypeAtom } from './index'
+import {
+  SlippageType,
+  defaultSlippagePercentage,
+  defaultSlippageType,
+  settingsModalOpenAtom,
+  slippagePercentageAtom,
+  slippageTypeAtom,
+} from './index'
 
 export function useSettingsModal() {
   const [open, setOpen] = useAtom(settingsModalOpenAtom)
@@ -16,6 +24,9 @@ export function useSettingsModal() {
 }
 
 export function useSlippage() {
+  useHydrateAtoms([[slippagePercentageAtom, defaultSlippagePercentage]])
+  useHydrateAtoms([[slippageTypeAtom, defaultSlippageType]])
+
   const [slippagePercentage, setSlippagePercentage] = useAtom(slippagePercentageAtom)
   const [slippageType, setSlippageType] = useAtom(slippageTypeAtom)
 

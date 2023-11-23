@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 
 import { BytesLike, MinimalToken } from '@/typings'
 import { LIQUIDITY_V2_ABI } from '@/constants/abi/LIQUIDITY_V2_ABI'
-import { useTotalSupply } from '@/hooks/useERC20'
+import { useTotalSupply } from './useERC20'
 import { useSpotPrice } from './useTokenPrice'
 
 export function useLiquidityAmountsV2(pair: MinimalToken, tokenX: MinimalToken, tokenY: MinimalToken, liquidity: BigNumber) {

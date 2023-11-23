@@ -1,5 +1,4 @@
 import { SupportedChainId } from '@/constants/chains'
-import { StaticImageData } from 'next/image'
 
 export type BytesLike = `0x${string}`
 
@@ -7,7 +6,7 @@ export interface BaseToken {
   name: string
   symbol: string
   decimals: number
-  logo: StaticImageData
+  logoURI: string
   native?: true
   wrapped?: true
   stablecoin?: true

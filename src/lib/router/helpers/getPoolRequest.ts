@@ -6,24 +6,12 @@ import { __FACTORY_PAIR_FOR_A_B_STABLE } from '../abi/__FACTORY_PAIR_FOR_A_B_STA
 import { __PAIR_RESERVES_112_112_32 } from '../abi/__PAIR_RESERVES_112_112_32'
 import { __PAIR_RESERVES_256_256_256 } from '../abi/__PAIR_RESERVES_256_256_256'
 import { __PAIR_RESERVES_112_112_16_16 } from '../abi/__PAIR_RESERVES_112_112_16_16'
-import { BytesLike, GetPoolRequestsArgs, GetPoolRequestsCandidatesArgs, Leg, Legs } from '../typings'
+import { BytesLike, GetPoolRequestsArgs, Path } from '../typings'
 
 export abstract class GetPoolRequestsHelper {
-  public static generateGetPoolRequestsCandidatesArgs(candidates: Legs[]): GetPoolRequestsCandidatesArgs {
+  public static generateGetPoolRequestsMultiArgs(path: Path): GetPoolRequestsArgs {
     return [
-      candidates.map(legs =>
-        legs.map(leg => ({
-          router: leg.router.address,
-          factory: leg.router.factory,
-          getPairCalldata: this.generateGetPairCalldata(leg),
-          poolRequestCalldata: this.generatePoolRequestCalldata(leg),
-        })),
-      ),
-    ]
-  }
-  public static generateGetPoolRequestsArgs(legs: Legs): GetPoolRequestsArgs {
-    return [
-      legs.map(leg => ({
+      path.map(leg => ({
         router: leg.router.address,
         factory: leg.router.factory,
         getPairCalldata: this.generateGetPairCalldata(leg),
@@ -33,7 +21,7 @@ export abstract class GetPoolRequestsHelper {
   }
 
   public static decodeReservesResult(
-    leg: Leg,
+    leg: Path[number],
     data: BytesLike,
   ): {
     reserve0: bigint
@@ -67,30 +55,30 @@ export abstract class GetPoolRequestsHelper {
     }
   }
 
-  private static generateGetPairCalldata(leg: Leg): BytesLike {
+  private static generateGetPairCalldata(leg: Path[number]): BytesLike {
     switch (leg.router.getPair) {
       case 'getPair_A_B':
         return encodeFunctionData({
           abi: __FACTORY_GET_PAIR_A_B,
           functionName: 'getPair',
-          args: [leg.path.from.address, leg.path.to.address],
+          args: [leg.from.address, leg.to.address],
         })
       case 'getPool_A_B_stable':
         return encodeFunctionData({
           abi: __FACTORY_GET_POOL_A_B_STABLE,
           functionName: 'getPool',
-          args: [leg.path.from.address, leg.path.to.address, leg.path.stable],
+          args: [leg.from.address, leg.to.address, leg.stable],
         })
       case 'pairFor_A_B_stable':
         return encodeFunctionData({
           abi: __FACTORY_PAIR_FOR_A_B_STABLE,
           functionName: 'pairFor',
-          args: [leg.path.from.address, leg.path.to.address, leg.path.stable],
+          args: [leg.from.address, leg.to.address, leg.stable],
         })
     }
   }
 
-  private static generatePoolRequestCalldata(leg: Leg): BytesLike {
+  private static generatePoolRequestCalldata(leg: Path[number]): BytesLike {
     switch (leg.router.getReserves) {
       case 'getReserves_112_112_32':
         return encodeFunctionData({

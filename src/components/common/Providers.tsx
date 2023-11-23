@@ -3,6 +3,7 @@
 import React from 'react'
 import { ThemeProvider } from '@wits/next-themes'
 import { RainbowKitProvider, darkTheme, lightTheme } from '@rainbow-me/rainbowkit'
+import TanstackProvider from './TanstackProvider'
 import { WagmiConfig } from 'wagmi'
 import { Provider as JotaiProvider } from 'jotai'
 
@@ -20,17 +21,19 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider attribute='class'>
       <JotaiProvider>
-        <WagmiConfig config={wagmiConfig}>
-          <RainbowKitProvider
-            chains={chains}
-            initialChain={FALLBACK_CHAIN_ID}
-            showRecentTransactions
-            theme={theme === 'light' ? lightTheme() : darkTheme()}
-          >
-            {children}
-            <SettingsModal />
-          </RainbowKitProvider>
-        </WagmiConfig>
+        <TanstackProvider>
+          <WagmiConfig config={wagmiConfig}>
+            <RainbowKitProvider
+              chains={chains}
+              initialChain={FALLBACK_CHAIN_ID}
+              showRecentTransactions
+              theme={theme === 'light' ? lightTheme() : darkTheme()}
+            >
+              {children}
+              <SettingsModal />
+            </RainbowKitProvider>
+          </WagmiConfig>
+        </TanstackProvider>
       </JotaiProvider>
     </ThemeProvider>
   )

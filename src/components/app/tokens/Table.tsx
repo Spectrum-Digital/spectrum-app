@@ -4,14 +4,17 @@ import { useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import Image from 'next/image'
 import { Skeleton } from '@mui/material'
-import { Legs } from '@/lib/router'
+import { Path } from '@/lib/router'
 
-import { Token } from '@/typings'
-import { Tokens, getTokenByAddressChainId } from '@/constants/tokens/tokens'
+import { PRIMARY_STABLECOIN } from '@/constants/tokens/stablecoins'
 import { ChainInfo } from '@/constants/chains/chainInfo'
+import { getTokenByAddress } from '@/constants/tokens'
+import { SupportedChainId } from '@/constants/chains'
+import { BytesLike, Token } from '@/typings'
 import { formatDollarAmount } from '@/utils/numbers'
-import { useLiquidityAdjustedPrice, useSpotPrice } from '@/hooks/useTokenPrice'
+import { getExplorerLink } from '@/utils/explorer'
 import { TokenLogo } from '@/components/icons/Token'
+import { useLiquidityAdjustedPrice, useSpotPrice } from '@/hooks/useTokenPrice'
 
 export function Table({ tokens }: { tokens: Token[] }) {
   return (
@@ -33,8 +36,8 @@ export function Table({ tokens }: { tokens: Token[] }) {
 }
 
 const InnerRow = ({ token }: { token: Token }) => {
-  const { error: priceError, price: spotPrice } = useSpotPrice(token, Tokens.STABLECOIN_BASE_USDbC)
-  const { error: liquidError, price: liquidPrice, route: liquidRoute } = useLiquidityAdjustedPrice(token, Tokens.STABLECOIN_BASE_USDbC)
+  const { error: liquidError, price: liquidPrice, path } = useLiquidityAdjustedPrice(token, PRIMARY_STABLECOIN[token.chainId])
+  const { error: priceError, price: spotPrice } = useSpotPrice(token, PRIMARY_STABLECOIN[token.chainId])
 
   const priceImpact = useMemo(
     () =>
@@ -48,20 +51,20 @@ const InnerRow = ({ token }: { token: Token }) => {
         <Image src={ChainInfo[token.chainId].icon} alt={`${ChainInfo[token.chainId].chainName} logo`} width={25} height={25} />
       </div>
       <div className='grid-item col-span-2 row-start h-16'>
-        <Image src={token.logo} alt={`${token.name} logo`} width={25} height={25} />
+        <Image src={token.logoURI} alt={`${token.name} logo`} width={25} height={25} />
         <div className='font-bold'>{token.name}</div>
         <div className='text-secondary'>{token.symbol}</div>
       </div>
       <div className='grid-item col-span-4 h-16'>
-        {!priceError ? <Route legs={liquidRoute} /> : <Skeleton variant='rectangular' className='w-full h-6 dark:bg-gray-700' />}
+        {!priceError ? (
+          <Route chainId={token.chainId} path={path} />
+        ) : (
+          <Skeleton variant='rectangular' className='w-full h-6 dark:bg-gray-700' />
+        )}
       </div>
       <div className='grid-item text-right middle col-span-1 h-16'>
         {!priceError && spotPrice.gt(0) ? (
-          token.stablecoin ? (
-            `$${spotPrice.toPrecision(6)}`
-          ) : (
-            formatDollarAmount(spotPrice.toNumber(), 2)
-          )
+          formatDollarAmount(spotPrice.toNumber(), 6)
         ) : (
           <Skeleton variant='rectangular' className='w-full h-6 dark:bg-gray-700' />
         )}
@@ -69,7 +72,7 @@ const InnerRow = ({ token }: { token: Token }) => {
       <div className='grid-item text-right middle col-span-2 h-16'>
         {!liquidError && liquidPrice.gt(0) ? (
           <>
-            <span>{token.stablecoin ? `$${liquidPrice.toPrecision(6)}` : formatDollarAmount(liquidPrice.toNumber(), 2)}</span>{' '}
+            <span>{formatDollarAmount(liquidPrice.toNumber(), 6)}</span>{' '}
             {priceImpact.lt(0) && <span className='text-red-400 text-xs'>({priceImpact.toFixed(2)}%)</span>}
           </>
         ) : (
@@ -80,33 +83,46 @@ const InnerRow = ({ token }: { token: Token }) => {
   )
 }
 
-const Route = ({ legs }: { legs: Legs }) => {
+const Route = ({ chainId, path }: { chainId: SupportedChainId; path: Path }) => {
   const tokens = useMemo(
     () =>
-      legs.reduce(
+      path.reduce(
         (acc, leg, index) => {
+          const from = getTokenByAddress(leg.from.address, chainId)
+          const to = getTokenByAddress(leg.to.address, chainId)
+
           if (index === 0) {
-            acc.push(getTokenByAddressChainId(leg.path.from.address, leg.path.from.chainId))
+            acc.push(from ? from : { address: leg.from.address, chainId })
           }
-          acc.push(getTokenByAddressChainId(leg.path.to.address, leg.path.to.chainId))
+          acc.push(to ? to : { address: leg.to.address, chainId })
           return acc
         },
-        [] as Array<Token | undefined>,
+        [] as Array<Token | { address: BytesLike; chainId: number }>,
       ),
-    [legs],
+    [path, chainId],
   )
 
   return (
     <div className='row-start'>
       {tokens.map((token, index) => {
-        return token ? (
+        return 'logoURI' in token ? (
           <div key={index} className='row-start !w-fit'>
-            <Image src={token.logo} alt={token.name} width={25} height={25} />
+            <Image src={token.logoURI} alt={token.name} width={25} height={25} />
             <span className='font-bold text-xs'>{token.symbol}</span>
             {index < tokens.length - 1 && <span className='text-secondary text-center'>&#10230;</span>}
           </div>
         ) : (
-          <TokenLogo key={index} />
+          <a
+            key={index}
+            className='row-start !w-fit'
+            href={getExplorerLink(chainId, 'address', token.address)}
+            target='_blank'
+            rel='noreferrer'
+          >
+            <TokenLogo key={index} />
+            <span className='font-bold text-xs'>Unknown</span>
+            {index < tokens.length - 1 && <span className='text-secondary text-center'>&#10230;</span>}
+          </a>
         )
       })}
     </div>

@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import { useContractRead } from 'wagmi'
-import { Legs } from '@/lib/router'
+import { SpectrumContract, Path } from '@/lib/router'
 
-import { SpectrumRouter } from '@/constants/routes'
-import { useAmountsOut } from '@/hooks/useAmountsOut'
 import { MinimalToken } from '@/typings'
+import { useAmountsOut } from './useAmountsOut'
+import { useTokenRouter } from './useTokenRouter'
 
 export function useLiquidityAdjustedPrice(
   tokenIn: MinimalToken,
@@ -13,14 +13,16 @@ export function useLiquidityAdjustedPrice(
 ): {
   error: string
   price: BigNumber
-  route: Legs
+  path: Path
 } {
-  const result = useAmountsOut(tokenIn, tokenOut, '1')
+  const paths = useTokenRouter(tokenIn, tokenOut)
+
+  const result = useAmountsOut(tokenIn, tokenOut, '1', paths)
   return useMemo(
     () => ({
       error: result.error,
       price: result.amountsOut,
-      route: result.route,
+      path: result.path,
     }),
     [result],
   )
@@ -32,9 +34,10 @@ export function useSpotPrice(
 ): {
   error: string
   price: BigNumber
-  route: Legs
+  path: Path
 } {
-  const params = useMemo(() => SpectrumRouter.getPrice(tokenIn, tokenOut), [tokenIn, tokenOut])
+  const { path } = useLiquidityAdjustedPrice(tokenIn, tokenOut)
+  const params = useMemo(() => SpectrumContract.getPrice(tokenIn, tokenOut, path), [tokenIn, tokenOut, path])
 
   const { data } = useContractRead({
     address: params.payload.address,
@@ -46,20 +49,15 @@ export function useSpotPrice(
     enabled: Boolean(!params.error && params.payload.address),
   })
 
-  // useEffect(() => {
-  //   if (params.error) {
-  //     console.error(params.errorMessage)
-  //   }
-  // }, [params])
-
   return useMemo(() => {
     if (tokenIn.address.toLowerCase() === tokenOut.address.toLowerCase()) {
-      return { error: '', price: new BigNumber(1), route: [] }
+      return { error: '', price: new BigNumber(1), path: [] }
     } else {
       return {
         error: params.errorCode ?? '',
-        ...params.parse('highest', data),
+        price: params.parse(data),
+        path: path,
       }
     }
-  }, [tokenIn, tokenOut, data, params])
+  }, [tokenIn, tokenOut, data, params, path])
 }

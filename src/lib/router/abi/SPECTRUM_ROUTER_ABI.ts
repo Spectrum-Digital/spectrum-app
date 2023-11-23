@@ -1,5 +1,63 @@
 export const SPECTRUM_ROUTER_ABI = [
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint64',
+        name: 'version',
+        type: 'uint64',
+      },
+    ],
+    name: 'Initialized',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'previousOwner',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'OwnershipTransferStarted',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'previousOwner',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'OwnershipTransferred',
+    type: 'event',
+  },
+  {
+    inputs: [],
+    name: 'acceptOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         components: [
@@ -14,8 +72,8 @@ export const SPECTRUM_ROUTER_ABI = [
             type: 'bytes',
           },
         ],
-        internalType: 'struct AmountsOutHop[]',
-        name: 'hops',
+        internalType: 'struct AmountsOut[]',
+        name: 'path',
         type: 'tuple[]',
       },
     ],
@@ -45,12 +103,12 @@ export const SPECTRUM_ROUTER_ABI = [
             type: 'bytes',
           },
         ],
-        internalType: 'struct AmountsOutHop[][]',
-        name: 'candidates',
+        internalType: 'struct AmountsOut[][]',
+        name: 'paths',
         type: 'tuple[][]',
       },
     ],
-    name: 'getAmountsOutCandidates',
+    name: 'getAmountsOutMulti',
     outputs: [
       {
         internalType: 'uint256[]',
@@ -86,8 +144,8 @@ export const SPECTRUM_ROUTER_ABI = [
             type: 'bytes',
           },
         ],
-        internalType: 'struct PoolRequestLeg[]',
-        name: 'legs',
+        internalType: 'struct PoolRequest[]',
+        name: 'path',
         type: 'tuple[]',
       },
     ],
@@ -132,12 +190,12 @@ export const SPECTRUM_ROUTER_ABI = [
             type: 'bytes',
           },
         ],
-        internalType: 'struct PoolRequestLeg[][]',
-        name: 'candidates',
+        internalType: 'struct PoolRequest[][]',
+        name: 'paths',
         type: 'tuple[][]',
       },
     ],
-    name: 'getPoolRequestsCandidates',
+    name: 'getPoolRequestsMulti',
     outputs: [
       {
         components: [
@@ -152,7 +210,7 @@ export const SPECTRUM_ROUTER_ABI = [
             type: 'address[]',
           },
         ],
-        internalType: 'struct PoolRequestCandidateResult[]',
+        internalType: 'struct PoolRequestResult[]',
         name: 'result',
         type: 'tuple[]',
       },
@@ -169,6 +227,52 @@ export const SPECTRUM_ROUTER_ABI = [
       },
     ],
     name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'owner',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'pendingOwner',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'transferOwnership',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

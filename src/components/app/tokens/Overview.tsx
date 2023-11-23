@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import Image from 'next/image'
 
-import { Token } from '@/typings'
+import { tokens } from '@/constants/tokens'
 import { SupportedChainId, SupportedChainIds } from '@/constants/chains'
 import { ChainInfo } from '@/constants/chains/chainInfo'
 import { useSearch } from '@/hooks/useSearch'
@@ -14,16 +14,20 @@ import { TokenLogo } from '@/components/icons/Token'
 import { SearchField } from '@/components/search'
 import { Table, TableSkeleton } from './Table'
 
-export default function Overview({ tokens }: { tokens: Token[] }) {
+export default function Overview() {
   const mounted = useHasMounted()
   const [selectedChain, setSelectedChain] = useState<SupportedChainId | 'All Networks'>('All Networks')
   const [typedQuery, setTypedQuery] = useState('')
 
-  const searchedTokens = useSearch(typedQuery, tokens, ['name', 'symbol', 'address'])
-  const filteredTokens = useMemo(
-    () => (selectedChain === 'All Networks' ? searchedTokens : searchedTokens.filter(token => token.chainId === selectedChain)),
-    [searchedTokens, selectedChain],
-  )
+  const filteredTokens = useMemo(() => {
+    if (selectedChain === 'All Networks') {
+      return Object.values(tokens).flat()
+    } else {
+      return tokens[selectedChain]
+    }
+  }, [selectedChain])
+
+  const filtered = useSearch(typedQuery, filteredTokens, ['name', 'symbol', 'address'])
 
   return (
     <>
@@ -61,7 +65,7 @@ export default function Overview({ tokens }: { tokens: Token[] }) {
           className='border border-primary px-3 py-2 rounded-xl'
         />
       </div>
-      {mounted ? <Table tokens={filteredTokens} /> : <TableSkeleton />}
+      {mounted ? <Table tokens={filtered} /> : <TableSkeleton />}
     </>
   )
 }

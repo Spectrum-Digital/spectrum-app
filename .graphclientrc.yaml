@@ -1,0 +1,14 @@
+sources:
+  - name: SpectrumRouterBase
+    handler:
+      graphql:
+        # Default chainName is base purely for the initial introspection on buildtime
+        endpoint: https://api.studio.thegraph.com/query/4791/spectrum-router-{context.chainName:base}/version/latest
+
+additionalTypeDefs: |
+  extend type Pool {
+    chainId: String!
+  }
+
+documents:
+  - ./src/graphql/queries.graphql
