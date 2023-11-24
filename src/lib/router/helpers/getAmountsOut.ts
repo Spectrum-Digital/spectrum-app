@@ -71,10 +71,13 @@ export abstract class GetAmountsOutHelper {
   }
 
   private static getAddressMapCalldata(compressed: CompressedPath, amountIn: string): BytesLike {
+    const first = compressed.legs[0]
+    if (!first) return '0x'
+
     return encodeFunctionData({
       abi: __ROUTER_ADDRESS_MAP,
       functionName: 'getAmountsOut',
-      args: [BigInt(amountIn), compressed.legs.map((leg, index) => (index === 0 ? leg.from.address : leg.to.address))],
+      args: [BigInt(amountIn), [first.from.address, ...compressed.legs.map(leg => leg.to.address)]],
     })
   }
 

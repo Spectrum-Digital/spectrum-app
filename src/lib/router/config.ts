@@ -1,7 +1,16 @@
 import { BytesLike, ChainId, DEXRouter, SpectrumChainId } from './typings'
 
 export const RouterAddresses: { [chainId: number]: BytesLike } = {
+  [SpectrumChainId.ARBITRUM]: '0xBa22100380a3615B705Ff025EB31595EBaeDe231',
   [SpectrumChainId.BASE]: '0x146D3078c4b550760BC3a2EaeCC7Cd7F0dc5445E',
+  [SpectrumChainId.FANTOM]: '0x592EC5A4A4Ad0cbc05344f8a72299D5A203b9510',
+}
+
+// Only use the part of the URL after https://
+export const SubgraphURL: { [chainId in SpectrumChainId]: string } = {
+  [SpectrumChainId.ARBITRUM]: 'api.thegraph.com/subgraphs/name/coinlordd/spectrum-router-arbitrum',
+  [SpectrumChainId.BASE]: 'api.studio.thegraph.com/query/4791/spectrum-router-base/version/latest',
+  [SpectrumChainId.FANTOM]: 'api.thegraph.com/subgraphs/name/coinlordd/spectrum-router-fantom',
 }
 
 export const DEXRouters = {

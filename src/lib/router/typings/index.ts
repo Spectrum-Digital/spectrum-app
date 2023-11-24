@@ -4,10 +4,10 @@ import { SPECTRUM_ROUTER_ABI } from '../abi/SPECTRUM_ROUTER_ABI'
 export type { BytesLike, Token, DEXRouter, Path } from './zod'
 
 export enum SpectrumChainId {
-  // ARBITRUM = 42161,
+  ARBITRUM = 42161,
   BASE = 8453,
   // BINANCE = 56,
-  // FANTOM = 250,
+  FANTOM = 250,
   // MAINNET = 1,
   // OPTIMISM = 10,
 }
@@ -19,15 +19,6 @@ export enum ChainId {
   FANTOM = 250,
   MAINNET = 1,
   OPTIMISM = 10,
-}
-
-export enum SubgraphChainName {
-  // ARBITRUM = 'arbitrum',
-  BASE = 'base',
-  // BINANCE = 'bsc',
-  // FANTOM = 'fantom',
-  // MAINNET = 'mainnet',
-  // OPTIMISM = 'optimism',
 }
 
 export type NodeVolatility = 'stable' | 'volatile' | 'stable_volatile'

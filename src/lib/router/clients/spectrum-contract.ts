@@ -70,7 +70,8 @@ export abstract class SpectrumContract {
         // We have to stringify the amounts in order to find the indexOf a few lines later.
         const amounts = data.map(amount => new BigNumber(amount.toString()).toFixed())
         const amountsOut = type === 'highest' ? BigNumber.max(...amounts) : BigNumber.min(...amounts)
-        const winner = compressedPaths[amounts.indexOf(amountsOut.toFixed())]
+        const index = amountsOut.isZero() ? -1 : amounts.indexOf(amountsOut.toFixed())
+        const winner = index === -1 ? undefined : compressedPaths[index]
 
         return winner
           ? { amountsOut: amountsOut.shiftedBy(-tokenOut.decimals), path: GetAmountsOutHelper.decompressPath(winner) }

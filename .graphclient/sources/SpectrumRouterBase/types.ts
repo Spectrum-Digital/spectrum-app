@@ -474,6 +474,6 @@ export type _SubgraphErrorPolicy_ =
 
   export type Context = {
       ["SpectrumRouterBase"]: { Query: QuerySdk, Mutation: MutationSdk, Subscription: SubscriptionSdk },
-      ["chainName"]: Scalars['ID']
+      ["url"]: Scalars['ID']
     };
 }

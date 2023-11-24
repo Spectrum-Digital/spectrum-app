@@ -753,7 +753,7 @@ const additionalEnvelopPlugins: MeshPlugin<any>[] = [];
 const spectrumRouterBaseTransforms = [];
 const spectrumRouterBaseHandler = new GraphqlHandler({
               name: "SpectrumRouterBase",
-              config: {"endpoint":"https://api.studio.thegraph.com/query/4791/spectrum-router-{context.chainName:base}/version/latest"},
+              config: {"endpoint":"https://{context.url:api.studio.thegraph.com/query/4791/spectrum-router-base/version/latest}"},
               baseDir,
               cache,
               pubsub,
