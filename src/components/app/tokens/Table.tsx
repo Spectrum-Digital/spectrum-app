@@ -26,7 +26,7 @@ export function Table({ tokens }: { tokens: Token[] }) {
         <div className='grid-header text-right col-span-1'>Spot Price</div>
         <div className='grid-header text-right col-span-2'>Liquid Price</div>
         {!tokens.length ? (
-          <div className='grid-empty-row text-sm text-center text-secondary col-span-8'>No tokens found.</div>
+          <div className='grid-empty-row text-sm text-center text-secondary col-span-10'>No tokens found.</div>
         ) : (
           tokens.map((token, index) => <InnerRow key={index} token={token} />)
         )}
