@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import Image from 'next/image'
 import { Skeleton } from '@mui/material'
-import { Path } from '@/lib/router'
+import { Path } from '@spectrum-digital/spectrum-router'
 
 import { PRIMARY_STABLECOIN } from '@/constants/tokens/stablecoins'
 import { ChainInfo } from '@/constants/chains/chainInfo'

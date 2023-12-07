@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { SpectrumRouter, SpectrumPeriphery, Token, Path, BytesLike, NodeVolatility, DEXRouters } from '@/lib/router'
+import { SpectrumRouter, SpectrumPeriphery, Token, Path, BytesLike, NodeVolatility, DEXRouters } from '@spectrum-digital/spectrum-router'
 
 import { SupportedChainId } from '@/constants/chains'
 import { getWeightedNodes } from '@/constants/tokens'
@@ -97,28 +97,19 @@ class RouterAggregator {
     )
   }
 
-  private async synchronize(): Promise<void> {
-    await this.synchronizeExchange(this.aerodromeRouter, getWeightedNodes(SupportedChainId.BASE))
-    await this.synchronizeExchange(this.camelotRouter, getWeightedNodes(SupportedChainId.ARBITRUM))
-    await this.synchronizeExchange(this.spookyswapV2Router, getWeightedNodes(SupportedChainId.FANTOM))
+  private synchronize(): void {
+    this.synchronizeExchange(this.aerodromeRouter, getWeightedNodes(SupportedChainId.BASE))
+    this.synchronizeExchange(this.camelotRouter, getWeightedNodes(SupportedChainId.ARBITRUM))
+    this.synchronizeExchange(this.spookyswapV2Router, getWeightedNodes(SupportedChainId.FANTOM))
   }
 
   private async synchronizeExchange(router: SpectrumRouter, weightedNodes: BytesLike[]): Promise<void> {
-    // Emit we're synchronizing
-    router.toggleSynchronizing(true)
-
     // Add weighted nodes
     router.addWeightedNodes(weightedNodes)
 
     // Add pools synchronously, because async messes with cache storage.
     const pools = await SpectrumPeriphery.getPools(router.dexRouter)
-    for (let i = 0; i < pools.length; i++) {
-      const pool = pools[i]!
-      await router.addPair(pool.token0, pool.token1, pool.stable)
-    }
-
-    // Emit we're done synchronizing
-    router.toggleSynchronizing(false)
+    void (await router.addPools(pools))
   }
 }
 

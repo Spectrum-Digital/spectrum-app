@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import { useContractRead } from 'wagmi'
-import { SpectrumContract, Path } from '@/lib/router'
+import { SpectrumContract, Path } from '@spectrum-digital/spectrum-router'
 
 import { MinimalToken } from '@/typings'
 import { useAmountsOut } from './useAmountsOut'

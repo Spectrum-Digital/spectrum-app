@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "generate": "graphclient build"
+    "lint": "next lint"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -15,6 +14,7 @@
     "@mui/icons-material": "^5.14.18",
     "@mui/material": "^5.14.18",
     "@rainbow-me/rainbowkit": "^1.2.0",
+    "@spectrum-digital/spectrum-router": "^0.0.10",
     "@tanstack/react-query": "^5.8.4",
     "@tanstack/react-query-devtools": "^5.8.4",
     "@wagmi/core": "^1.4.7",
@@ -37,7 +37,6 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@graphprotocol/client-cli": "^3.0.0",
     "@swc-jotai/react-refresh": "^0.1.0",
     "@tanstack/eslint-plugin-query": "^5.8.4",
     "@types/node": "^20.9.0",

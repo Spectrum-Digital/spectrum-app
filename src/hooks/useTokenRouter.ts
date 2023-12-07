@@ -1,12 +1,13 @@
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Path, PathsValidator } from '@/lib/router'
+import { Path, PathsValidator } from '@spectrum-digital/spectrum-router'
 
 import { MinimalToken } from '@/typings'
 
 export function useTokenRouter(tokenIn: MinimalToken, tokenOut: MinimalToken): Path[] {
   const { data } = useQuery({
     queryKey: ['tokenRouter', { tokenIn, tokenOut }],
+    refetchInterval: 1000,
     queryFn: async () => {
       const url = `/api/router?tokenIn=${tokenIn.address}&tokenOut=${tokenOut.address}&chainId=${tokenIn.chainId}`
       const result = await fetch(url).then(res => res.json())
