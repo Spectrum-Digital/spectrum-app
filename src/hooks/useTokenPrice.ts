@@ -44,7 +44,7 @@ export function useSpotPrice(
 
   const params = useMemo(
     () => SpectrumContract.getPrice(tokenIn.chainId, tokenIn, tokenOut, compressedPath),
-    [tokenIn, tokenOut, path, compressedPath],
+    [tokenIn, tokenOut, compressedPath],
   )
 
   const { data } = useContractRead({
