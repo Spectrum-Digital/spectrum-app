@@ -40,9 +40,8 @@ export const tokens: { [chainId in SupportedChainId]: Token[] } = {
   // [SupportedChainId.BINANCE]: getTokensByChainId(SupportedChainId.BINANCE).map(transformTokenURIInternal),
   [SupportedChainId.FANTOM]: getTokensByChainId(SupportedChainId.FANTOM).map(transformTokenURIInternal),
   [SupportedChainId.MAINNET]: [],
-  [SupportedChainId.OPTIMISM]: [],
   // [SupportedChainId.MAINNET]: getTokensByChainId(SupportedChainId.MAINNET).map(transformTokenURIInternal),
-  // [SupportedChainId.OPTIMISM]: getTokensByChainId(SupportedChainId.OPTIMISM).map(transformTokenURIInternal),
+  [SupportedChainId.OPTIMISM]: getTokensByChainId(SupportedChainId.OPTIMISM).map(transformTokenURIInternal),
 }
 
 export const externalTokens: { [chainId in SupportedChainId]: Token[] } = {

@@ -19,10 +19,11 @@ import { useLiquidityAdjustedPrice, useSpotPrice } from '@/hooks/useTokenPrice'
 export function Table({ tokens }: { tokens: Token[] }) {
   return (
     <div className='grid-container w-full'>
-      <div className='grid grid-cols-10 w-full'>
+      <div className='grid grid-cols-11 w-full'>
         <div className='grid-header text-left col-span-1'>Chain</div>
         <div className='grid-header text-left col-span-2'>Token</div>
         <div className='grid-header text-left col-span-4'>Route</div>
+        <div className='grid-header text-center col-span-1'># Options</div>
         <div className='grid-header text-right col-span-1'>Spot Price</div>
         <div className='grid-header text-right col-span-2'>Liquid Price</div>
         {!tokens.length ? (
@@ -36,7 +37,7 @@ export function Table({ tokens }: { tokens: Token[] }) {
 }
 
 const InnerRow = ({ token }: { token: Token }) => {
-  const { error: liquidError, price: liquidPrice, path } = useLiquidityAdjustedPrice(token, PRIMARY_STABLECOIN[token.chainId])
+  const { error: liquidError, price: liquidPrice, path, considered } = useLiquidityAdjustedPrice(token, PRIMARY_STABLECOIN[token.chainId])
   const { error: priceError, price: spotPrice } = useSpotPrice(token, PRIMARY_STABLECOIN[token.chainId])
 
   const priceImpact = useMemo(
@@ -62,6 +63,7 @@ const InnerRow = ({ token }: { token: Token }) => {
           <Skeleton variant='rectangular' className='w-full h-6 dark:bg-gray-700' />
         )}
       </div>
+      <div className='grid-item col-span-1 h-16 text-center'>{considered}</div>
       <div className='grid-item text-right middle col-span-1 h-16'>
         {!priceError && spotPrice.gt(0) ? (
           formatDollarAmount(spotPrice.toNumber(), 6)
@@ -136,6 +138,7 @@ export function TableSkeleton() {
         <div className='grid-header text-left col-span-1'>Chain</div>
         <div className='grid-header text-left col-span-2'>Token</div>
         <div className='grid-header text-left col-span-4'>Route</div>
+        <div className='grid-header text-left col-span-1'># Options</div>
         <div className='grid-header text-right col-span-1'>Spot Price</div>
         <div className='grid-header text-right col-span-2'>Liquid Price</div>
         <div className='contents group'>
@@ -146,6 +149,9 @@ export function TableSkeleton() {
             <Skeleton variant='rectangular' className='w-full h-6 dark:bg-gray-700' />
           </div>
           <div className='grid-item col-span-4 h-16'>
+            <Skeleton variant='rectangular' className='w-full h-6 dark:bg-gray-700' />
+          </div>
+          <div className='grid-item col-span-2 h-16'>
             <Skeleton variant='rectangular' className='w-full h-6 dark:bg-gray-700' />
           </div>
           <div className='grid-item col-span-1 h-16'>

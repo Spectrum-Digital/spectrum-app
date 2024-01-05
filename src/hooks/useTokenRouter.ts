@@ -1,20 +1,28 @@
 import { useMemo } from 'react'
+import z from 'zod'
 import { useQuery } from '@tanstack/react-query'
-import { Path, PathsValidator } from '@spectrum-digital/spectrum-router'
-
 import { MinimalToken } from '@/typings'
 
-export function useTokenRouter(tokenIn: MinimalToken, tokenOut: MinimalToken): Path[] {
+const Validator = z.object({
+  success: z.boolean(),
+  data: z.array(z.string()),
+})
+
+export function useTokenRouter(tokenIn: MinimalToken, tokenOut: MinimalToken): string[] {
   const { data } = useQuery({
     queryKey: ['tokenRouter', { tokenIn, tokenOut }],
-    refetchInterval: 1000,
     queryFn: async () => {
-      const url = `/api/router?tokenIn=${tokenIn.address}&tokenOut=${tokenOut.address}&chainId=${tokenIn.chainId}`
+      const url = new URL(process.env.NEXT_PUBLIC_ROUTER_API_URL!)
+      url.pathname = '/v1/path'
+      url.searchParams.append('tokenIn', tokenIn.address)
+      url.searchParams.append('tokenOut', tokenOut.address)
+      url.searchParams.append('chainId', tokenIn.chainId.toString())
+
       const result = await fetch(url).then(res => res.json())
-      const parsed = PathsValidator.safeParse(result)
-      return parsed.success ? parsed.data : []
+      const parsed = Validator.safeParse(result)
+      return parsed.success ? parsed.data.data : []
     },
   })
 
-  return useMemo(() => (data ? data : []), [data])
+  return useMemo(() => data ?? [], [data])
 }

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import { useContractRead } from 'wagmi'
-import { SpectrumContract, Path } from '@spectrum-digital/spectrum-router'
+import { Path, SpectrumContract } from '@spectrum-digital/spectrum-router'
 
 import { MinimalToken } from '@/typings'
 import { useAmountsOut } from './useAmountsOut'
@@ -14,17 +14,21 @@ export function useLiquidityAdjustedPrice(
   error: string
   price: BigNumber
   path: Path
+  compressedPath: string
+  considered: number
 } {
   const paths = useTokenRouter(tokenIn, tokenOut)
-
   const result = useAmountsOut(tokenIn, tokenOut, '1', paths)
+
   return useMemo(
     () => ({
       error: result.error,
       price: result.amountsOut,
       path: result.path,
+      compressedPath: result.compressedPath,
+      considered: paths.length,
     }),
-    [result],
+    [result, paths],
   )
 }
 
@@ -36,8 +40,12 @@ export function useSpotPrice(
   price: BigNumber
   path: Path
 } {
-  const { path } = useLiquidityAdjustedPrice(tokenIn, tokenOut)
-  const params = useMemo(() => SpectrumContract.getPrice(tokenIn, tokenOut, path), [tokenIn, tokenOut, path])
+  const { path, compressedPath } = useLiquidityAdjustedPrice(tokenIn, tokenOut)
+
+  const params = useMemo(
+    () => SpectrumContract.getPrice(tokenIn.chainId, tokenIn, tokenOut, compressedPath),
+    [tokenIn, tokenOut, path, compressedPath],
+  )
 
   const { data } = useContractRead({
     address: params.payload.address,

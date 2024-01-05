@@ -2,23 +2,23 @@ import { useMemo } from 'react'
 import { useContractRead } from 'wagmi'
 import BigNumber from 'bignumber.js'
 import { Path, SpectrumContract } from '@spectrum-digital/spectrum-router'
-
 import { MinimalToken } from '@/typings'
 
 export function useAmountsOut(
   tokenIn: MinimalToken,
   tokenOut: MinimalToken,
   amountIn: string | BigNumber,
-  paths: Path[],
+  paths: string[],
 ): {
   error: string
   amountsOut: BigNumber
   path: Path
+  compressedPath: string
 } {
   const amountInRaw = useMemo(() => new BigNumber(amountIn).shiftedBy(tokenIn.decimals), [amountIn, tokenIn])
 
   const params = useMemo(
-    () => SpectrumContract.getAmountsOut(tokenIn, tokenOut, amountInRaw, paths),
+    () => SpectrumContract.getAmountsOut(tokenIn.chainId, tokenIn, tokenOut, amountInRaw, paths),
     [tokenIn, tokenOut, amountInRaw, paths],
   )
 
@@ -34,7 +34,7 @@ export function useAmountsOut(
 
   return useMemo(() => {
     if (tokenIn.address.toLowerCase() === tokenOut.address.toLowerCase()) {
-      return { error: '', amountsOut: new BigNumber(amountIn), path: [] }
+      return { error: '', amountsOut: new BigNumber(amountIn), path: [], compressedPath: '' }
     } else {
       return {
         error: params.errorCode ?? '',
