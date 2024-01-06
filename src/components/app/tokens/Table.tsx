@@ -27,7 +27,7 @@ export function Table({ tokens }: { tokens: Token[] }) {
         <div className='grid-header text-right col-span-1'>Spot Price</div>
         <div className='grid-header text-right col-span-2'>Liquid Price</div>
         {!tokens.length ? (
-          <div className='grid-empty-row text-sm text-center text-secondary col-span-10'>No tokens found.</div>
+          <div className='grid-empty-row text-sm text-center text-secondary col-span-11'>No tokens found.</div>
         ) : (
           tokens.map((token, index) => <InnerRow key={index} token={token} />)
         )}
@@ -134,7 +134,7 @@ const Route = ({ chainId, path }: { chainId: SupportedChainId; path: Path }) => 
 export function TableSkeleton() {
   return (
     <div className='grid-container w-full'>
-      <div className='grid grid-cols-10 w-full'>
+      <div className='grid grid-cols-11 w-full'>
         <div className='grid-header text-left col-span-1'>Chain</div>
         <div className='grid-header text-left col-span-2'>Token</div>
         <div className='grid-header text-left col-span-4'>Route</div>
@@ -151,7 +151,7 @@ export function TableSkeleton() {
           <div className='grid-item col-span-4 h-16'>
             <Skeleton variant='rectangular' className='w-full h-6 dark:bg-gray-700' />
           </div>
-          <div className='grid-item col-span-2 h-16'>
+          <div className='grid-item col-span-1 h-16'>
             <Skeleton variant='rectangular' className='w-full h-6 dark:bg-gray-700' />
           </div>
           <div className='grid-item col-span-1 h-16'>
