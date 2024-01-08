@@ -21,8 +21,8 @@ dependencies:
     specifier: 1.2.0
     version: 1.2.0(@types/react@18.2.37)(react-dom@18.2.0)(react@18.2.0)(viem@1.19.3)(wagmi@1.4.7)
   '@spectrum-digital/spectrum-router':
-    specifier: 0.0.13
-    version: 0.0.13(typescript@5.2.2)
+    specifier: 0.0.14
+    version: 0.0.14(typescript@5.2.2)
   '@tanstack/react-query':
     specifier: 5.8.4
     version: 5.8.4(react-dom@18.2.0)(react@18.2.0)
@@ -1142,15 +1142,18 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@spectrum-digital/spectrum-router@0.0.13(typescript@5.2.2):
-    resolution: {integrity: sha512-Jmh+j8vQBVd+bVpq4CVY1s6hxoaVDSz2gsBR9bUvzmo0b8idiz7fejFCSjT4IR+inQEaB2sWoZ4GwcyXlozKrw==}
+  /@spectrum-digital/spectrum-router@0.0.14(typescript@5.2.2):
+    resolution: {integrity: sha512-5o7Kzd4oHMw+CeOmXN2Jwc9zmnaDqP0OHeLyoXHXcpNt4N59z28NfDCO0R2r3hWeZatfYB4Cz4SZz0DZ2js87Q==}
     engines: {node: '>=18.0.0'}
     dependencies:
       bignumber.js: 9.1.2
+      ioredis: 5.3.2
+      lodash: 4.17.21
       viem: 1.19.3(typescript@5.2.2)(zod@3.22.4)
       zod: 3.22.4
     transitivePeerDependencies:
       - bufferutil
+      - supports-color
       - typescript
       - utf-8-validate
     dev: false
