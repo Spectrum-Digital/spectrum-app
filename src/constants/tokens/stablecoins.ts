@@ -54,7 +54,7 @@ export const STABLE = {
     STABLECOIN_USD_PLUS: {
       ...STABLECOIN_USD_PLUS,
       chainId: SupportedChainId.BASE,
-      address: '0xb79dd08ea68a908a97220c76d19a6aa9cbde4376',
+      address: '0xB79DD08EA68A908A97220C76d19A6aA9cBDE4376',
     },
     STABLECOIN_USDbC: {
       ...STABLECOIN_USDbC,
