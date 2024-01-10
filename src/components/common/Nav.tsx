@@ -24,10 +24,10 @@ export default function Nav() {
           <ul className='row-center list-none [&>li]:flex [&>li]:h-full hidden'>
             <li>
               <Link
-                href='/tokens'
-                className={`hover-bg-tertiary hover:rounded-xl px-3 py-2 ${pathname == '/tokens/' ? 'font-semibold' : 'text-secondary'}`}
+                href='/home'
+                className={`hover-bg-tertiary hover:rounded-xl px-3 py-2 ${pathname == '/home/' ? 'font-semibold' : 'text-secondary'}`}
               >
-                Tokens
+                Home
               </Link>
             </li>
             <li>

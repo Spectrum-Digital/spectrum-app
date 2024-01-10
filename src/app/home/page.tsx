@@ -1,4 +1,4 @@
-import Overview from '@/components/app/tokens/Overview'
+import Overview from '@/components/app/home/Overview'
 
 export default function Page() {
   return (

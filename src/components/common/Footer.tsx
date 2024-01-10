@@ -59,8 +59,8 @@ export default function Footer() {
       <div className='block overflow-hidden h-full md:hidden bg-primary rounded-full border border-primary'>
         <ul className='row-between h-full p-1'>
           <li className='row-center flex-1 h-full hover-bg-tertiary hover:rounded-full hover:cursor-pointer'>
-            <Link href='/tokens' className={`${pathname == '/tokens/' ? 'font-semibold' : 'text-secondary'}`}>
-              Tokens
+            <Link href='/home' className={`${pathname == '/home/' ? 'font-semibold' : 'text-secondary'}`}>
+              Home
             </Link>
           </li>
           <li className='row-center flex-1 h-full hover-bg-tertiary hover:rounded-full hover:cursor-pointer'>
@@ -105,9 +105,9 @@ export default function Footer() {
               <h1 className='text-lg font-semibold'>Pages</h1>
               <div className='w-full h-0 border-b border-secondary' />
             </li>
-            <li className={`btn-secondary w-full hover:cursor-pointer ${pathname == '/tokens' ? 'btn-active' : null}`}>
+            <li className={`btn-secondary w-full hover:cursor-pointer ${pathname == '/home' ? 'btn-active' : null}`}>
               <Link href='/' onClick={toggleMenu}>
-                Tokens
+                Home
               </Link>
             </li>
             <li className={`btn-secondary w-full hover:cursor-pointer ${pathname == '/swap' ? 'btn-active' : null}`}>

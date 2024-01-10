@@ -4,68 +4,78 @@ import { useContractRead } from 'wagmi'
 import { Path, SpectrumContract } from '@spectrum-digital/spectrum-router'
 
 import { MinimalToken } from '@/typings'
-import { useAmountsOut } from './useAmountsOut'
-import { useTokenRouter } from './useTokenRouter'
+import { useOptimalPathAPI } from './useSpectrumRouter'
 
 export function useLiquidityAdjustedPrice(
   tokenIn: MinimalToken,
   tokenOut: MinimalToken,
 ): {
-  error: string
   price: BigNumber
   path: Path
-  compressedPath: string
-  considered: number
 } {
-  const paths = useTokenRouter(tokenIn, tokenOut)
-  const result = useAmountsOut(tokenIn, tokenOut, '1', paths)
+  const path = useOptimalPathAPI(tokenIn, tokenOut, '1')
 
-  return useMemo(
-    () => ({
-      error: result.error,
-      price: result.amountsOut,
-      path: result.path,
-      compressedPath: result.compressedPath,
-      considered: paths.length,
-    }),
-    [result, paths],
+  const params = useMemo(
+    () => SpectrumContract.getAmountsOut(tokenIn.chainId, tokenIn.address, tokenOut.address, '1', [path]),
+    [tokenIn, tokenOut, path],
   )
+
+  const { data } = useContractRead({
+    address: params.error ? undefined : params.payload.address,
+    abi: params.error ? undefined : params.payload.abi,
+    functionName: params.error ? undefined : params.payload.functionName,
+    args: params.error ? undefined : params.payload.args,
+    chainId: tokenIn.chainId,
+    watch: true,
+    enabled: Boolean(!params.error),
+  })
+
+  return useMemo(() => {
+    if (params.error) {
+      return { price: new BigNumber(0), path: [] }
+    } else {
+      const parsed = params.parse('highest', data)
+      return {
+        price: parsed.amountsOut,
+        path: parsed.path,
+      }
+    }
+  }, [data, params])
 }
 
 export function useSpotPrice(
   tokenIn: MinimalToken,
   tokenOut: MinimalToken,
 ): {
-  error: string
   price: BigNumber
   path: Path
 } {
-  const { path, compressedPath } = useLiquidityAdjustedPrice(tokenIn, tokenOut)
+  const path = useOptimalPathAPI(tokenIn, tokenOut, '1')
 
   const params = useMemo(
-    () => SpectrumContract.getPrice(tokenIn.chainId, tokenIn, tokenOut, compressedPath),
-    [tokenIn, tokenOut, compressedPath],
+    () => SpectrumContract.getPrice(tokenIn.chainId, tokenIn.address, tokenOut.address, path ?? ''),
+    [tokenIn, tokenOut, path],
   )
 
   const { data } = useContractRead({
-    address: params.payload.address,
-    abi: params.payload.abi,
-    functionName: params.payload.functionName,
-    args: params.payload.args,
+    address: params.error ? undefined : params.payload.address,
+    abi: params.error ? undefined : params.payload.abi,
+    functionName: params.error ? undefined : params.payload.functionName,
+    args: params.error ? undefined : params.payload.args,
     chainId: tokenIn.chainId,
     watch: true,
-    enabled: Boolean(!params.error && params.payload.address),
+    enabled: Boolean(!params.error),
   })
 
   return useMemo(() => {
-    if (tokenIn.address.toLowerCase() === tokenOut.address.toLowerCase()) {
-      return { error: '', price: new BigNumber(1), path: [] }
+    if (params.error) {
+      return { price: new BigNumber(0), path: [] }
     } else {
+      const parsed = params.parse(data)
       return {
-        error: params.errorCode ?? '',
-        price: params.parse(data),
-        path: path,
+        price: parsed.price,
+        path: parsed.path,
       }
     }
-  }, [tokenIn, tokenOut, data, params, path])
+  }, [data, params])
 }

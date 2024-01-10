@@ -15,6 +15,7 @@ import { formatDollarAmount } from '@/utils/numbers'
 import { getExplorerLink } from '@/utils/explorer'
 import { TokenLogo } from '@/components/icons/Token'
 import { useLiquidityAdjustedPrice, useSpotPrice } from '@/hooks/useTokenPrice'
+import { useAvailablePathsAPI } from '@/hooks/useSpectrumRouter'
 
 export function Table({ tokens }: { tokens: Token[] }) {
   return (
@@ -37,14 +38,22 @@ export function Table({ tokens }: { tokens: Token[] }) {
 }
 
 const InnerRow = ({ token }: { token: Token }) => {
-  const { error: liquidError, price: liquidPrice, path, considered } = useLiquidityAdjustedPrice(token, PRIMARY_STABLECOIN[token.chainId])
-  const { error: priceError, price: spotPrice } = useSpotPrice(token, PRIMARY_STABLECOIN[token.chainId])
+  const tokenOut = PRIMARY_STABLECOIN[token.chainId]
+  const { price: liquidPrice, path } = useLiquidityAdjustedPrice(token, tokenOut)
+  const { price: spotPrice } = useSpotPrice(token, tokenOut)
+  const paths = useAvailablePathsAPI(token, tokenOut)
+
+  const isRouteToSelf = useMemo(() => token.address.toLowerCase() === tokenOut.address.toLowerCase(), [token, tokenOut])
 
   const priceImpact = useMemo(
     () =>
       spotPrice.isZero() || liquidPrice.isZero() ? new BigNumber(0) : spotPrice.minus(liquidPrice).div(spotPrice).times(100).times(-1),
     [spotPrice, liquidPrice],
   )
+
+  if (isRouteToSelf) {
+    return null
+  }
 
   return (
     <div className='contents group'>
@@ -57,28 +66,28 @@ const InnerRow = ({ token }: { token: Token }) => {
         <div className='text-secondary'>{token.symbol}</div>
       </div>
       <div className='grid-item col-span-4 h-16'>
-        {!priceError ? (
-          <Route chainId={token.chainId} path={path} />
-        ) : (
+        {spotPrice.isZero() ? (
           <Skeleton variant='rectangular' className='w-full h-6 dark:bg-gray-700' />
+        ) : (
+          <Route chainId={token.chainId} path={path} />
         )}
       </div>
-      <div className='grid-item col-span-1 h-16 text-center'>{considered}</div>
+      <div className='grid-item col-span-1 h-16 text-center'>{paths.length || ''}</div>
       <div className='grid-item text-right middle col-span-1 h-16'>
-        {!priceError && spotPrice.gt(0) ? (
-          formatDollarAmount(spotPrice.toNumber(), 6)
-        ) : (
+        {spotPrice.isZero() ? (
           <Skeleton variant='rectangular' className='w-full h-6 dark:bg-gray-700' />
+        ) : (
+          formatDollarAmount(spotPrice.toNumber(), 6)
         )}
       </div>
       <div className='grid-item text-right middle col-span-2 h-16'>
-        {!liquidError && liquidPrice.gt(0) ? (
+        {liquidPrice.isZero() ? (
+          <Skeleton variant='rectangular' className='w-full h-6 dark:bg-gray-700' />
+        ) : (
           <>
             <span>{formatDollarAmount(liquidPrice.toNumber(), 6)}</span>{' '}
             {priceImpact.lt(0) && <span className='text-red-400 text-xs'>({priceImpact.toFixed(2)}%)</span>}
           </>
-        ) : (
-          <Skeleton variant='rectangular' className='w-full h-6 dark:bg-gray-700' />
         )}
       </div>
     </div>
@@ -111,7 +120,12 @@ const Route = ({ chainId, path }: { chainId: SupportedChainId; path: Path }) => 
           <div key={index} className='row-start !w-fit'>
             <Image src={token.logoURI} alt={token.name} width={25} height={25} />
             <span className='font-bold text-xs'>{token.symbol}</span>
-            {index < tokens.length - 1 && <span className='text-secondary text-center'>&#10230;</span>}
+            {index < tokens.length - 1 && (
+              <span className='text-secondary opacity-50 text-xss text-center'>
+                ({path[index]?.dexConfiguration.name}
+                {path[index]?.stable ? ' - stable' : ''}) &#10230;
+              </span>
+            )}
           </div>
         ) : (
           <a
